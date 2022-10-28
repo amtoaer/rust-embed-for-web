@@ -1,6 +1,6 @@
 [package]
 name = "rust-embed-for-web"
-version = "9.0.0"
+version = "9.0.1"
 description = "Rust Macro which embeds files into your executable. A fork of `rust-embed` with a focus on usage on web servers."
 readme = "readme.md"
 documentation = "https://docs.rs/rust-embed"
