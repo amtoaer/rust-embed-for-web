@@ -220,7 +220,7 @@ fn impl_rust_embed_for_web(ast: &syn::DeriveInput) -> TokenStream2 {
     )
 }
 
-#[proc_macro_derive(RustEmbed, attributes(folder, prefix, include, exclude))]
+#[proc_macro_derive(RustEmbed, attributes(folder, prefix, include, exclude, gzip))]
 pub fn derive_input_object(input: TokenStream) -> TokenStream {
     let ast: DeriveInput = syn::parse(input).unwrap();
     let gen = impl_rust_embed_for_web(&ast);
