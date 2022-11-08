@@ -1,8 +1,11 @@
+#[cfg(feature = "include-exclude")]
 use globset::{Glob, GlobMatcher};
 
 #[derive(Debug)]
 pub struct Config {
+    #[cfg(feature = "include-exclude")]
     include: Vec<GlobMatcher>,
+    #[cfg(feature = "include-exclude")]
     exclude: Vec<GlobMatcher>,
     gzip: bool,
     br: bool,
@@ -11,7 +14,9 @@ pub struct Config {
 impl Default for Config {
     fn default() -> Self {
         Self {
+            #[cfg(feature = "include-exclude")]
             include: vec![],
+            #[cfg(feature = "include-exclude")]
             exclude: vec![],
             gzip: true,
             br: true,
@@ -25,6 +30,7 @@ impl Config {
     }
 
     // Builder functions
+    #[cfg(feature = "include-exclude")]
     pub fn add_include(&mut self, pattern: String) {
         self.include.push(
             Glob::new(&pattern)
@@ -33,6 +39,7 @@ impl Config {
         );
     }
 
+    #[cfg(feature = "include-exclude")]
     pub fn add_exclude(&mut self, pattern: String) {
         self.exclude.push(
             Glob::new(&pattern)
@@ -49,10 +56,12 @@ impl Config {
         self.br = status;
     }
 
+    #[cfg(feature = "include-exclude")]
     pub fn get_includes(&self) -> &Vec<GlobMatcher> {
         &self.include
     }
 
+    #[cfg(feature = "include-exclude")]
     pub fn get_excludes(&self) -> &Vec<GlobMatcher> {
         &self.exclude
     }
@@ -62,9 +71,12 @@ impl Config {
     /// When deciding, includes always have priority over excludes. That means
     /// you typically will list paths you want excluded, then add includes to
     /// make an exception for some subset of files.
+    #[allow(unused_variables)]
     pub fn should_include(&self, path: &str) -> bool {
-        // Includes have priority.
-        self.include
+        #[cfg(feature = "include-exclude")]
+        {
+            // Includes have priority.
+            self.include
             .iter()
             .any(|include| include.is_match(path))
             // If not, then we check if the file has been excluded. Any file
@@ -73,6 +85,11 @@ impl Config {
                 .exclude
                 .iter()
                 .any(|exclude| exclude.is_match(path))
+        }
+        #[cfg(not(feature = "include-exclude"))]
+        {
+            true
+        }
     }
 
     pub fn should_gzip(&self) -> bool {

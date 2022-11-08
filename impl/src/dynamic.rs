@@ -23,30 +23,40 @@ impl MakeEmbed for Vec<GlobMatcher> {
 impl MakeEmbed for Config {
     fn make_embed(&self) -> TokenStream2 {
         let includes_embed = {
-            let includes = self.get_includes();
-            if includes.is_empty() {
-                quote! {}
-            } else {
-                let includes = includes.make_embed();
-                quote! {
-                    for ele in #includes {
-                        config.add_include(ele.to_string());
+            #[cfg(feature = "include-exclude")]
+            {
+                let includes = self.get_includes();
+                if includes.is_empty() {
+                    quote! {}
+                } else {
+                    let includes = includes.make_embed();
+                    quote! {
+                        for ele in #includes {
+                            config.add_include(ele.to_string());
+                        }
                     }
                 }
             }
+            #[cfg(not(feature = "include-exclude"))]
+            quote! {}
         };
         let excludes_embed = {
-            let excludes = self.get_excludes();
-            if excludes.is_empty() {
-                quote! {}
-            } else {
-                let excludes = excludes.make_embed();
-                quote! {
-                    for ele in #excludes {
-                        config.add_exclude(ele.to_string());
+            #[cfg(feature = "include-exclude")]
+            {
+                let excludes = self.get_excludes();
+                if excludes.is_empty() {
+                    quote! {}
+                } else {
+                    let excludes = excludes.make_embed();
+                    quote! {
+                        for ele in #excludes {
+                            config.add_exclude(ele.to_string());
+                        }
                     }
                 }
             }
+            #[cfg(not(feature = "include-exclude"))]
+            quote! {}
         };
 
         quote! {
