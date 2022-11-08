@@ -1,6 +1,6 @@
 [package]
 name = "rust-embed-for-web-utils"
-version = "10.0.0"
+version = "11.0.0"
 description = "Utilities for rust-embed-for-web"
 readme = "readme.md"
 repository = "https://github.com/SeriousBug/rust-embed-for-web"
@@ -10,19 +10,19 @@ categories = ["web-programming::http-server"]
 edition = "2018"
 
 [dependencies]
+# Find files to include
 walkdir = "2.3.1"
+# Compute hash
 sha2 = "0.10.5"
-base85 = "1.1"
+# Encode hash & etag
+base85rs = "0.1"
 # Compute last-modified timestamps
 chrono = "0.4"
 # Compute the mime types
 new_mime_guess = "4.0.1"
-# Compression
-flate2 = "1.0"
-
-[dependencies.globset]
-version = "0.4.8"
-optional = true
+# Filter by glob include/exclude
+globset = { version = "0.4", optional = true }
 
 [features]
+default = []
 include-exclude = ["globset"]
