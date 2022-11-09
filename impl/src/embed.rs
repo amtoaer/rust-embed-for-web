@@ -104,11 +104,14 @@ pub(crate) fn generate_embed_impl(
                  rel_path,
                  full_canonical_path,
              }| {
-                let Ok(file) = DynamicFile::read_from_fs(&full_canonical_path) else { return None };
-                let file_embed = EmbedDynamicFile::new(&file, config).make_embed();
-                Some(quote! {
-                    #rel_path => Some(#file_embed),
-                })
+                if let Ok(file) = DynamicFile::read_from_fs(&full_canonical_path) {
+                    let file_embed = EmbedDynamicFile::new(&file, config).make_embed();
+                    Some(quote! {
+                        #rel_path => Some(#file_embed),
+                    })
+                } else {
+                    None
+                }
             },
         )
         .collect();
