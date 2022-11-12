@@ -32,7 +32,7 @@ executable in exchange for better performance at runtime. In particular:
 
 ```toml
 [dependencies]
-rust-embed-for-web="11.0"
+rust-embed-for-web="11.1.0"
 ```
 
 ## Usage
