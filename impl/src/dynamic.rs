@@ -60,7 +60,7 @@ impl MakeEmbed for Config {
         };
 
         quote! {
-            let mut config = rust_embed_for_web_utils::Config::new();
+            let mut config = rust_embed_for_web::utils::Config::new();
             #includes_embed
             #excludes_embed
             config
