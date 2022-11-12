@@ -3,10 +3,13 @@ use std::fmt::Debug;
 
 /// A file embedded into the binary.
 ///
-///
 /// `rust-embed-for-web` changes which type of file you get based on whether
-/// it's a debug or release build. You should likely not try to interface
-/// directly with this type, and instead use the `EmbedableFile` trait.
+/// it's a debug or release build. In release builds or with the `always-embed`
+/// flag, you'll get `EmbeddedFile`s.
+///
+/// You should interface with this object using the `EmbedableFile` trait, which
+/// is implemented for both the embedded and dynamic files.
+#[derive(Clone, Copy)]
 pub struct EmbeddedFile {
     name: &'static str,
     data: &'static [u8],
@@ -101,5 +104,11 @@ impl Debug for EmbeddedFile {
             .field("last_modified", &self.last_modified())
             .field("mime_type", &self.mime_type)
             .finish()
+    }
+}
+
+impl PartialEq for EmbeddedFile {
+    fn eq(&self, other: &Self) -> bool {
+        self.hash.eq(other.hash)
     }
 }

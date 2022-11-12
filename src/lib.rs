@@ -1,3 +1,16 @@
+//! Rust Macro which embeds files into your executable. A fork of `rust-embed`
+//! with a focus on usage in web servers.
+//!
+//! Please check out the
+//! [readme](https://github.com/SeriousBug/rust-embed-for-web/blob/master/readme.md)
+//! in the repository to get started. There's an
+//! [example](https://github.com/SeriousBug/rust-embed-for-web/blob/master/examples/actix.rs)
+//! available too!
+//!
+//! If you are using this with Actix Web, there's an existing responder
+//! [`actix-web-rust-embed-responder`](https://lib.rs/crates/actix-web-rust-embed-responder)
+//! which will handle everything for you, from negotiating compressed responses
+//! to cache revalidation.
 #![forbid(unsafe_code)]
 
 #[allow(unused_imports)]

@@ -12,6 +12,14 @@ use sha2::{Digest, Sha256};
 
 use super::common::EmbedableFile;
 
+/// A file read from the file system dynamically.
+///
+/// `rust-embed-for-web` changes which type of file you get based on whether
+/// it's a debug or release build. In debug builds, you'll get `DynamicFile`s.
+///
+/// You should interface with this object using the `EmbedableFile` trait, which
+/// is implemented for both the embedded and dynamic files.
+#[derive(Clone)]
 pub struct DynamicFile {
     name: String,
     data: Vec<u8>,
@@ -115,5 +123,11 @@ impl Debug for DynamicFile {
             .field("last_modified", &self.last_modified())
             .field("mime_type", &self.mime_type)
             .finish()
+    }
+}
+
+impl PartialEq for DynamicFile {
+    fn eq(&self, other: &Self) -> bool {
+        self.hash.eq(&other.hash)
     }
 }

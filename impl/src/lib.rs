@@ -1,3 +1,8 @@
+//! This crate contains the implementation of the `RustEmbed` macro for
+//! `rust-embed-for-web`.
+//!
+//! You generally don't want to use this crate directly, `rust-embed-for-web`
+//! re-exports any necessary parts from this crate.
 #![recursion_limit = "1024"]
 #![forbid(unsafe_code)]
 #[macro_use]
@@ -70,6 +75,21 @@ fn impl_rust_embed_for_web(ast: &syn::DeriveInput) -> TokenStream2 {
 }
 
 #[proc_macro_derive(RustEmbed, attributes(folder, prefix, include, exclude, gzip))]
+/// A folder that is embedded into your program.
+///
+/// For example:
+///
+/// ```ignore
+/// #[derive(RustEmbed)]
+/// #[folder = "examples/public"]
+/// struct MyEmbeddedFiles;
+/// ```
+///
+/// The `folder` is relative to where your `Cargo.toml` file is located. This
+/// example will embed the files under `<your-workspace>/examples/public` into
+/// your program.
+///
+/// Please check the package readme for more details.
 pub fn derive_input_object(input: TokenStream) -> TokenStream {
     let ast: DeriveInput = syn::parse(input).unwrap();
     let gen = impl_rust_embed_for_web(&ast);

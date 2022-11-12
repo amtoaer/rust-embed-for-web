@@ -1,3 +1,7 @@
+//! This crate contains utility code for `rust-embed-for-web`.
+//!
+//! You generally don't want to use this crate directly, `rust-embed-for-web`
+//! re-exports any necessary parts from this crate.
 #![forbid(unsafe_code)]
 
 mod file;
