@@ -11,8 +11,8 @@
 ///
 /// You can access the data by calling the `as_ref` function through the `AsRef`
 /// trait. For example:
-#[cfg_attr(doctest, doc = " ```\nuse rust_embed_for_web_utils::EmbedableFile;\n")]
-#[cfg_attr(not(doctest), doc = "```")]
+/// ```
+/// # use rust_embed_for_web_utils::EmbedableFile;
 /// fn print_hash<T: EmbedableFile>(file: T) {
 ///     println!("The file hash is {}", file.hash().as_ref());
 /// }
