@@ -1,11 +1,6 @@
 # Rust Embed for Web <!-- omit in toc -->
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
-<!-- ALL-CONTRIBUTORS-BADGE:END -->
-
-<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-
-[![Contributors](https://img.shields.io/badge/all_contributors-0-orange.svg?label=contributors)](#contributors) <!-- ALL-CONTRIBUTORS-BADGE:END -->
+[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-) <!-- ALL-CONTRIBUTORS-BADGE:END -->
 [![Test coverage report](https://img.shields.io/codecov/c/github/SeriousBug/rust-embed-for-web)](https://codecov.io/gh/SeriousBug/rust-embed-for-web)
 [![lint checks](https://img.shields.io/github/actions/workflow/status/SeriousBug/rust-embed-for-web/lint.yml?label=lints&branch=master)](https://github.com/SeriousBug/rust-embed-for-web/actions/workflows/lint.yml)
 [![MIT license](https://img.shields.io/github/license/SeriousBug/rust-embed-for-web)](https://github.com/SeriousBug/rust-embed-for-web/blob/master/LICENSE.txt)
@@ -121,25 +116,6 @@ struct Assets;
     </tr>
   </tbody>
 </table>
-
-<!-- markdownlint-restore -->
-<!-- prettier-ignore-end -->
-
-<!-- ALL-CONTRIBUTORS-LIST:END -->
-<!-- prettier-ignore-start -->
-<!-- markdownlint-disable -->
-<table>
-  <tbody>
-    <tr>      
-  </tbody>
-</table>
-
-<!-- markdownlint-restore -->
-<!-- prettier-ignore-end -->
-
-<!-- ALL-CONTRIBUTORS-LIST:END -->
-<!-- prettier-ignore-start -->
-<!-- markdownlint-disable -->
 
 <!-- markdownlint-restore -->
 <!-- prettier-ignore-end -->
