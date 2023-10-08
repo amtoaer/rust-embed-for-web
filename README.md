@@ -1,6 +1,7 @@
 # Rust Embed for Web <!-- omit in toc -->
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-) <!-- ALL-CONTRIBUTORS-BADGE:END -->
+![Crates.io](https://img.shields.io/crates/v/rust-embed-for-web)
 [![Test coverage report](https://img.shields.io/codecov/c/github/SeriousBug/rust-embed-for-web)](https://codecov.io/gh/SeriousBug/rust-embed-for-web)
 [![lint checks](https://img.shields.io/github/actions/workflow/status/SeriousBug/rust-embed-for-web/lint.yml?label=lints&branch=master)](https://github.com/SeriousBug/rust-embed-for-web/actions/workflows/lint.yml)
 [![MIT license](https://img.shields.io/github/license/SeriousBug/rust-embed-for-web)](https://github.com/SeriousBug/rust-embed-for-web/blob/master/LICENSE.txt)
@@ -37,7 +38,7 @@ executable in exchange for better performance at runtime. In particular:
 
 ```toml
 [dependencies]
-rust-embed-for-web="11.1.1"
+rust-embed-for-web="11.1.3"
 ```
 
 ## Usage
