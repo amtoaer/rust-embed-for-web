@@ -1,8 +1,12 @@
 # Rust Embed for Web <!-- omit in toc -->
+
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-3-orange.svg?style=flat-square)](#contributors-)
+
+[![All Contributors](https://img.shields.io/badge/all_contributors-3-orange.svg?style=flat-square)](#contributors)
+
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
-![Crates.io](https://img.shields.io/crates/v/rust-embed-for-web)
+
+[![Crates.io](https://img.shields.io/crates/v/rust-embed-for-web)](https://crates.io/crates/rust-embed-for-web)
 [![Test coverage report](https://img.shields.io/codecov/c/github/SeriousBug/rust-embed-for-web)](https://codecov.io/gh/SeriousBug/rust-embed-for-web)
 [![lint checks](https://img.shields.io/github/actions/workflow/status/SeriousBug/rust-embed-for-web/lint.yml?label=lints&branch=master)](https://github.com/SeriousBug/rust-embed-for-web/actions/workflows/lint.yml)
 [![MIT license](https://img.shields.io/github/license/SeriousBug/rust-embed-for-web)](https://github.com/SeriousBug/rust-embed-for-web/blob/master/LICENSE.txt)
@@ -103,7 +107,28 @@ For example, if you wanted to exclude all `.svg` files except for one named
 #[derive(RustEmbed)]
 #[exclude = "*.svg"]
 #[include = "logo.svg"]
+#[folder = "assets/"]
 struct Assets;
+```
+
+### `prefix`
+
+You can specify a prefix, which will be added to the path of the files. For example:
+
+```rust
+#[derive(RustEmbed)]
+#[folder = "public/"]
+#[prefix = "static/"]
+struct Asset;
+
+
+fn main() {
+  // Say you had a file named "image.png" in a folder named "public".
+  // You'll get the asset when requesting it with the prefix.
+  let correct = Asset::get("static/image.png");
+  // You'll get None, because you didn't specify the prefix
+  let wrong = Asset::get("image.png");
+}
 ```
 
 ## Contributors
