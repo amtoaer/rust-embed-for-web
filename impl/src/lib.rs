@@ -72,7 +72,7 @@ fn impl_rust_embed_for_web(ast: &syn::DeriveInput) -> TokenStream2 {
     let config = read_attribute_config(ast);
 
     let prefixes = find_attribute_values(ast, "prefix");
-    let prefix = if prefixes.len() == 0 {
+    let prefix = if prefixes.is_empty() {
         "".to_string()
     } else if prefixes.len() == 1 {
         prefixes[0].clone()
