@@ -10,6 +10,7 @@ pub struct Config {
     gzip: bool,
     br: bool,
     preserve_source: bool,
+    preserve_source_except: Vec<GlobMatcher>,
 }
 
 impl Default for Config {
@@ -22,6 +23,8 @@ impl Default for Config {
             gzip: true,
             br: true,
             preserve_source: true,
+            #[cfg(feature = "include-exclude")]
+            preserve_source_except: vec![],
         }
     }
 }
@@ -50,6 +53,15 @@ impl Config {
         );
     }
 
+    #[cfg(feature = "include-exclude")]
+    pub fn add_preserve_source_except(&mut self, pattern: String) {
+        self.preserve_source_except.push(
+            Glob::new(&pattern)
+                .expect("Failed to parse glob pattern for preserve source unless")
+                .compile_matcher(),
+        );
+    }
+
     pub fn set_gzip(&mut self, status: bool) {
         self.gzip = status;
     }
@@ -70,6 +82,24 @@ impl Config {
     #[cfg(feature = "include-exclude")]
     pub fn get_excludes(&self) -> &Vec<GlobMatcher> {
         &self.exclude
+    }
+
+    #[cfg(feature = "include-exclude")]
+    pub fn get_preserve_source_except(&self) -> &Vec<GlobMatcher> {
+        &self.preserve_source_except
+    }
+
+    pub fn is_preserve_source_except(&self, path: &str) -> bool {
+        #[cfg(feature = "include-exclude")]
+        {
+            self.preserve_source_except
+                .iter()
+                .any(|matcher| matcher.is_match(path))
+        }
+        #[cfg(not(feature = "include-exclude"))]
+        {
+            false
+        }
     }
 
     /// Check if a file at some path should be included based on this config.

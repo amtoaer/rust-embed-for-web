@@ -59,11 +59,16 @@ impl<T: MakeEmbed> MakeEmbed for Option<T> {
 struct EmbedDynamicFile<'t> {
     file: &'t DynamicFile,
     config: &'t Config,
+    rel_path: &'t str,
 }
 
 impl<'t> EmbedDynamicFile<'t> {
-    fn new(file: &'t DynamicFile, config: &'t Config) -> EmbedDynamicFile<'t> {
-        EmbedDynamicFile { file, config }
+    fn new(file: &'t DynamicFile, config: &'t Config, rel_path: &'t str) -> EmbedDynamicFile<'t> {
+        EmbedDynamicFile {
+            file,
+            config,
+            rel_path,
+        }
     }
 }
 
@@ -83,11 +88,13 @@ impl<'t> MakeEmbed for EmbedDynamicFile<'t> {
         } else {
             None::<Vec<u8>>.make_embed()
         };
-        let data = if self.config.should_preserve_source() {
-            Some(data)
-        } else {
-            None
-        };
+        // for example, preserve_source = false, preserve_source_except = "*.html"
+        // will only preserve source for files that end with `.html`.
+        let mut preserve_source = self.config.should_preserve_source();
+        if self.config.is_preserve_source_except(self.rel_path) {
+            preserve_source = !preserve_source;
+        }
+        let data = if preserve_source { Some(data) } else { None };
         let data = data.make_embed();
         let hash = file.hash().make_embed();
         let etag = file.etag().make_embed();
@@ -124,7 +131,8 @@ pub(crate) fn generate_embed_impl(
                  full_canonical_path,
              }| {
                 if let Ok(file) = DynamicFile::read_from_fs(full_canonical_path) {
-                    let file_embed = EmbedDynamicFile::new(&file, config).make_embed();
+                    let file_embed =
+                        EmbedDynamicFile::new(&file, config, rel_path.as_str()).make_embed();
                     Some(quote! {
                         #rel_path => Some(#file_embed),
                     })
