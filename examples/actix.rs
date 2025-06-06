@@ -10,9 +10,9 @@ fn handle_embedded_file(path: &str) -> HttpResponse {
         Some(content) => {
             print_sizes(&content);
             let mut resp = HttpResponse::Ok();
-            resp.append_header(("ETag", content.etag()));
+            resp.append_header(("ETag", content.etag().as_ref()));
             if let Some(last_modified) = content.last_modified() {
-                resp.append_header(("Last-Modified", last_modified));
+                resp.append_header(("Last-Modified", last_modified.as_ref()));
             }
             if let Some(body) = content.data_br() {
                 // This part will only work on release builds, try running with:

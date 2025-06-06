@@ -1,5 +1,5 @@
 use super::common::EmbedableFile;
-use std::fmt::Debug;
+use std::{borrow::Cow, fmt::Debug};
 
 /// A file embedded into the binary.
 ///
@@ -23,43 +23,40 @@ pub struct EmbeddedFile {
 }
 
 impl EmbedableFile for EmbeddedFile {
-    type Data = &'static [u8];
-    type Meta = &'static str;
-
-    fn name(&self) -> Self::Meta {
-        self.name
+    fn name(&self) -> Cow<'static, str> {
+        Cow::from(self.name)
     }
 
-    fn data(&self) -> Option<Self::Data> {
-        self.data
+    fn data(&self) -> Option<Cow<'static, [u8]>> {
+        self.data.map(Cow::from)
     }
 
-    fn data_gzip(&self) -> Option<Self::Data> {
-        self.data_gzip
+    fn data_gzip(&self) -> Option<Cow<'static, [u8]>> {
+        self.data_gzip.map(Cow::from)
     }
 
-    fn data_br(&self) -> Option<Self::Data> {
-        self.data_br
+    fn data_br(&self) -> Option<Cow<'static, [u8]>> {
+        self.data_br.map(Cow::from)
     }
 
-    fn last_modified(&self) -> Option<Self::Meta> {
-        self.last_modified
+    fn last_modified(&self) -> Option<Cow<'static, str>> {
+        self.last_modified.map(Cow::from)
     }
 
     fn last_modified_timestamp(&self) -> Option<i64> {
         self.last_modified_timestamp
     }
 
-    fn hash(&self) -> Self::Meta {
-        self.hash
+    fn hash(&self) -> Cow<'static, str> {
+        Cow::from(self.hash)
     }
 
-    fn etag(&self) -> Self::Meta {
-        self.etag
+    fn etag(&self) -> Cow<'static, str> {
+        Cow::from(self.etag)
     }
 
-    fn mime_type(&self) -> Option<Self::Meta> {
-        self.mime_type
+    fn mime_type(&self) -> Option<Cow<'static, str>> {
+        self.mime_type.map(Cow::from)
     }
 }
 

@@ -1,3 +1,5 @@
+use std::borrow::Cow;
+
 use proc_macro2::TokenStream as TokenStream2;
 use rust_embed_for_web_utils::{get_files, Config, DynamicFile, EmbedableFile, FileEntry};
 
@@ -20,9 +22,19 @@ impl MakeEmbed for Vec<u8> {
     }
 }
 
-impl MakeEmbed for String {
+impl MakeEmbed for Cow<'static, [u8]> {
     fn make_embed(&self) -> TokenStream2 {
-        quote! { #self }
+        // We need to convert Cow to &[u8] to use it in the quote! macro
+        let v: &[u8] = self.as_ref();
+        quote! { &[#(#v),*] }
+    }
+}
+
+impl MakeEmbed for Cow<'static, str> {
+    fn make_embed(&self) -> TokenStream2 {
+        // We need to convert Cow to String to use it in the quote! macro
+        let s: &str = self.as_ref();
+        quote! { #s }
     }
 }
 
@@ -62,12 +74,12 @@ impl<'t> MakeEmbed for EmbedDynamicFile<'t> {
         // safety: `data()` will always return `Some` for dynamic files
         let data = file.data().unwrap();
         let data_gzip = if self.config.should_gzip() {
-            compress_gzip(&data).make_embed()
+            compress_gzip(data.as_ref()).make_embed()
         } else {
             None::<Vec<u8>>.make_embed()
         };
         let data_br = if self.config.should_br() {
-            compress_br(&data).make_embed()
+            compress_br(data.as_ref()).make_embed()
         } else {
             None::<Vec<u8>>.make_embed()
         };

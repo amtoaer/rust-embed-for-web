@@ -1,4 +1,5 @@
 use std::{
+    borrow::Cow,
     convert::TryInto,
     fmt::Debug,
     io::{BufReader, Read},
@@ -29,44 +30,41 @@ pub struct DynamicFile {
 }
 
 impl EmbedableFile for DynamicFile {
-    type Data = Vec<u8>;
-    type Meta = String;
-
-    fn name(&self) -> Self::Meta {
-        self.name.clone()
+    fn name(&self) -> Cow<'static, str> {
+        Cow::from(self.name.clone())
     }
 
-    fn data(&self) -> Option<Self::Data> {
-        Some(self.data.clone())
+    fn data(&self) -> Option<Cow<'static, [u8]>> {
+        Some(Cow::from(self.data.clone()))
     }
 
-    fn data_gzip(&self) -> Option<Self::Data> {
+    fn data_gzip(&self) -> Option<Cow<'static, [u8]>> {
         None
     }
 
-    fn data_br(&self) -> Option<Self::Data> {
+    fn data_br(&self) -> Option<Cow<'static, [u8]>> {
         None
     }
 
-    fn last_modified(&self) -> Option<Self::Meta> {
-        self.last_modified_timestamp()
-            .map(|v| chrono::Utc.timestamp_opt(v, 0).unwrap().to_rfc2822())
+    fn last_modified(&self) -> Option<Cow<'static, str>> {
+        self.last_modified_timestamp
+            .map(|v| Cow::from(chrono::Utc.timestamp_opt(v, 0).unwrap().to_rfc2822()))
     }
 
     fn last_modified_timestamp(&self) -> Option<i64> {
         self.last_modified_timestamp
     }
 
-    fn hash(&self) -> Self::Meta {
-        self.hash.clone()
+    fn hash(&self) -> Cow<'static, str> {
+        Cow::from(self.hash.clone())
     }
 
-    fn etag(&self) -> Self::Meta {
-        format!("\"{}\"", self.hash)
+    fn etag(&self) -> Cow<'static, str> {
+        Cow::from(format!("\"{}\"", self.hash))
     }
 
-    fn mime_type(&self) -> Option<Self::Meta> {
-        self.mime_type.clone()
+    fn mime_type(&self) -> Option<Cow<'static, str>> {
+        self.mime_type.as_ref().map(|v| Cow::from(v.clone()))
     }
 }
 
