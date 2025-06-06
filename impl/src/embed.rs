@@ -59,7 +59,8 @@ impl<'t> MakeEmbed for EmbedDynamicFile<'t> {
     fn make_embed(&self) -> TokenStream2 {
         let file = self.file;
         let name = file.name().make_embed();
-        let data = file.data();
+        // safety: `data()` will always return `Some` for dynamic files
+        let data = file.data().unwrap();
         let data_gzip = if self.config.should_gzip() {
             compress_gzip(&data).make_embed()
         } else {
@@ -69,6 +70,11 @@ impl<'t> MakeEmbed for EmbedDynamicFile<'t> {
             compress_br(&data).make_embed()
         } else {
             None::<Vec<u8>>.make_embed()
+        };
+        let data = if self.config.should_preserve_source() {
+            Some(data)
+        } else {
+            None
         };
         let data = data.make_embed();
         let hash = file.hash().make_embed();

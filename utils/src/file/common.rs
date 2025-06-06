@@ -24,7 +24,7 @@ pub trait EmbedableFile {
     /// The name of the embedded file.
     fn name(&self) -> Self::Meta;
     /// The contents of the embedded file.
-    fn data(&self) -> Self::Data;
+    fn data(&self) -> Option<Self::Data>;
     /// The contents of the file, compressed with gzip.
     ///
     /// This is `Some` if precompression has been done. `None` if the file was

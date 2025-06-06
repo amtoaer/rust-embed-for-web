@@ -36,8 +36,8 @@ impl EmbedableFile for DynamicFile {
         self.name.clone()
     }
 
-    fn data(&self) -> Self::Data {
-        self.data.clone()
+    fn data(&self) -> Option<Self::Data> {
+        Some(self.data.clone())
     }
 
     fn data_gzip(&self) -> Option<Self::Data> {

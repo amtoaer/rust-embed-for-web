@@ -12,7 +12,7 @@ use std::fmt::Debug;
 #[derive(Clone, Copy)]
 pub struct EmbeddedFile {
     name: &'static str,
-    data: &'static [u8],
+    data: Option<&'static [u8]>,
     data_gzip: Option<&'static [u8]>,
     data_br: Option<&'static [u8]>,
     hash: &'static str,
@@ -30,7 +30,7 @@ impl EmbedableFile for EmbeddedFile {
         self.name
     }
 
-    fn data(&self) -> Self::Data {
+    fn data(&self) -> Option<Self::Data> {
         self.data
     }
 
@@ -73,7 +73,7 @@ impl EmbeddedFile {
         // the file contents! And if you are changing or reordering any of
         // these, make sure to update the corresponding call in `impl`
         name: &'static str,
-        data: &'static [u8],
+        data: Option<&'static [u8]>,
         data_gzip: Option<&'static [u8]>,
         data_br: Option<&'static [u8]>,
         hash: &'static str,

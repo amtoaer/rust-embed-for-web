@@ -9,6 +9,7 @@ pub struct Config {
     exclude: Vec<GlobMatcher>,
     gzip: bool,
     br: bool,
+    preserve_source: bool,
 }
 
 impl Default for Config {
@@ -20,6 +21,7 @@ impl Default for Config {
             exclude: vec![],
             gzip: true,
             br: true,
+            preserve_source: true,
         }
     }
 }
@@ -56,6 +58,10 @@ impl Config {
         self.br = status;
     }
 
+    pub fn set_preserve_source(&mut self, status: bool) {
+        self.preserve_source = status;
+    }
+
     #[cfg(feature = "include-exclude")]
     pub fn get_includes(&self) -> &Vec<GlobMatcher> {
         &self.include
@@ -80,7 +86,7 @@ impl Config {
             .iter()
             .any(|include| include.is_match(path))
             // If not, then we check if the file has been excluded. Any file
-            // that is not explicitly excluded will be 
+            // that is not explicitly excluded will be
             || !self
                 .exclude
                 .iter()
@@ -98,5 +104,9 @@ impl Config {
 
     pub fn should_br(&self) -> bool {
         self.br
+    }
+
+    pub fn should_preserve_source(&self) -> bool {
+        self.preserve_source
     }
 }
