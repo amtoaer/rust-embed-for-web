@@ -24,7 +24,7 @@ use enum_dispatch::enum_dispatch;
 use crate::{DynamicFile, EmbeddedFile};
 
 #[enum_dispatch(EmbedableFile)]
-enum EmbeddedFileImpl {
+pub enum EmbeddedFileImpl {
     EmbeddedFile,
     DynamicFile,
 }
