@@ -42,6 +42,11 @@ pub(crate) fn read_attribute_config(ast: &syn::DeriveInput) -> Config {
                 "exclude" => parse_str(attribute).map(|v| config.add_exclude(v)),
                 "gzip" => parse_bool(attribute).map(|v| config.set_gzip(v)),
                 "br" => parse_bool(attribute).map(|v| config.set_br(v)),
+                "preserve_source" => parse_bool(attribute).map(|v| config.set_preserve_source(v)),
+                #[cfg(feature = "include-exclude")]
+                "preserve_source_except" => {
+                    parse_str(attribute).map(|v| config.add_preserve_source_except(v))
+                }
                 _ => None,
             };
         }

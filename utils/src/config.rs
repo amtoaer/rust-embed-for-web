@@ -9,6 +9,8 @@ pub struct Config {
     exclude: Vec<GlobMatcher>,
     gzip: bool,
     br: bool,
+    preserve_source: bool,
+    preserve_source_except: Vec<GlobMatcher>,
 }
 
 impl Default for Config {
@@ -20,6 +22,9 @@ impl Default for Config {
             exclude: vec![],
             gzip: true,
             br: true,
+            preserve_source: true,
+            #[cfg(feature = "include-exclude")]
+            preserve_source_except: vec![],
         }
     }
 }
@@ -48,12 +53,25 @@ impl Config {
         );
     }
 
+    #[cfg(feature = "include-exclude")]
+    pub fn add_preserve_source_except(&mut self, pattern: String) {
+        self.preserve_source_except.push(
+            Glob::new(&pattern)
+                .expect("Failed to parse glob pattern for preserve source unless")
+                .compile_matcher(),
+        );
+    }
+
     pub fn set_gzip(&mut self, status: bool) {
         self.gzip = status;
     }
 
     pub fn set_br(&mut self, status: bool) {
         self.br = status;
+    }
+
+    pub fn set_preserve_source(&mut self, status: bool) {
+        self.preserve_source = status;
     }
 
     #[cfg(feature = "include-exclude")]
@@ -64,6 +82,24 @@ impl Config {
     #[cfg(feature = "include-exclude")]
     pub fn get_excludes(&self) -> &Vec<GlobMatcher> {
         &self.exclude
+    }
+
+    #[cfg(feature = "include-exclude")]
+    pub fn get_preserve_source_except(&self) -> &Vec<GlobMatcher> {
+        &self.preserve_source_except
+    }
+
+    pub fn is_preserve_source_except(&self, path: &str) -> bool {
+        #[cfg(feature = "include-exclude")]
+        {
+            self.preserve_source_except
+                .iter()
+                .any(|matcher| matcher.is_match(path))
+        }
+        #[cfg(not(feature = "include-exclude"))]
+        {
+            false
+        }
     }
 
     /// Check if a file at some path should be included based on this config.
@@ -80,7 +116,7 @@ impl Config {
             .iter()
             .any(|include| include.is_match(path))
             // If not, then we check if the file has been excluded. Any file
-            // that is not explicitly excluded will be 
+            // that is not explicitly excluded will be
             || !self
                 .exclude
                 .iter()
@@ -98,5 +134,9 @@ impl Config {
 
     pub fn should_br(&self) -> bool {
         self.br
+    }
+
+    pub fn should_preserve_source(&self) -> bool {
+        self.preserve_source
     }
 }

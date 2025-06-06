@@ -1,3 +1,5 @@
+use std::borrow::Cow;
+
 use proc_macro2::TokenStream as TokenStream2;
 use rust_embed_for_web_utils::{get_files, Config, DynamicFile, EmbedableFile, FileEntry};
 
@@ -20,9 +22,19 @@ impl MakeEmbed for Vec<u8> {
     }
 }
 
-impl MakeEmbed for String {
+impl MakeEmbed for Cow<'static, [u8]> {
     fn make_embed(&self) -> TokenStream2 {
-        quote! { #self }
+        // We need to convert Cow to &[u8] to use it in the quote! macro
+        let v: &[u8] = self.as_ref();
+        quote! { &[#(#v),*] }
+    }
+}
+
+impl MakeEmbed for Cow<'static, str> {
+    fn make_embed(&self) -> TokenStream2 {
+        // We need to convert Cow to String to use it in the quote! macro
+        let s: &str = self.as_ref();
+        quote! { #s }
     }
 }
 
@@ -47,11 +59,16 @@ impl<T: MakeEmbed> MakeEmbed for Option<T> {
 struct EmbedDynamicFile<'t> {
     file: &'t DynamicFile,
     config: &'t Config,
+    rel_path: &'t str,
 }
 
 impl<'t> EmbedDynamicFile<'t> {
-    fn new(file: &'t DynamicFile, config: &'t Config) -> EmbedDynamicFile<'t> {
-        EmbedDynamicFile { file, config }
+    fn new(file: &'t DynamicFile, config: &'t Config, rel_path: &'t str) -> EmbedDynamicFile<'t> {
+        EmbedDynamicFile {
+            file,
+            config,
+            rel_path,
+        }
     }
 }
 
@@ -59,17 +76,25 @@ impl<'t> MakeEmbed for EmbedDynamicFile<'t> {
     fn make_embed(&self) -> TokenStream2 {
         let file = self.file;
         let name = file.name().make_embed();
-        let data = file.data();
+        // safety: `data()` will always return `Some` for dynamic files
+        let data = file.data().unwrap();
         let data_gzip = if self.config.should_gzip() {
-            compress_gzip(&data).make_embed()
+            compress_gzip(data.as_ref()).make_embed()
         } else {
             None::<Vec<u8>>.make_embed()
         };
         let data_br = if self.config.should_br() {
-            compress_br(&data).make_embed()
+            compress_br(data.as_ref()).make_embed()
         } else {
             None::<Vec<u8>>.make_embed()
         };
+        // for example, preserve_source = false, preserve_source_except = "*.html"
+        // will only preserve source for files that end with `.html`.
+        let mut preserve_source = self.config.should_preserve_source();
+        if self.config.is_preserve_source_except(self.rel_path) {
+            preserve_source = !preserve_source;
+        }
+        let data = if preserve_source { Some(data) } else { None };
         let data = data.make_embed();
         let hash = file.hash().make_embed();
         let etag = file.etag().make_embed();
@@ -106,7 +131,8 @@ pub(crate) fn generate_embed_impl(
                  full_canonical_path,
              }| {
                 if let Ok(file) = DynamicFile::read_from_fs(full_canonical_path) {
-                    let file_embed = EmbedDynamicFile::new(&file, config).make_embed();
+                    let file_embed =
+                        EmbedDynamicFile::new(&file, config, rel_path.as_str()).make_embed();
                     Some(quote! {
                         #rel_path => Some(#file_embed),
                     })

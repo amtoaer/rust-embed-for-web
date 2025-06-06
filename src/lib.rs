@@ -19,7 +19,7 @@ extern crate rust_embed_for_web_impl;
 
 pub use rust_embed_for_web_impl::*;
 
-pub use rust_embed_for_web_utils::{DynamicFile, EmbedableFile, EmbeddedFile};
+pub use rust_embed_for_web_utils::{DynamicFile, EmbedableFile, EmbeddedFile, EmbeddedFileImpl};
 
 #[doc(hidden)]
 pub extern crate rust_embed_for_web_utils as utils;

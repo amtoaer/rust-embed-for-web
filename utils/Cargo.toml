@@ -10,6 +10,8 @@ categories = ["web-programming::http-server"]
 edition = "2018"
 
 [dependencies]
+# Prevent dynamically dispatched trait accesses
+enum_dispatch = "0.3.13"
 # Find files to include
 walkdir = "2.4.0"
 # Compute hash

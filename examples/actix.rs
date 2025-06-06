@@ -10,9 +10,9 @@ fn handle_embedded_file(path: &str) -> HttpResponse {
         Some(content) => {
             print_sizes(&content);
             let mut resp = HttpResponse::Ok();
-            resp.append_header(("ETag", content.etag()));
+            resp.append_header(("ETag", content.etag().as_ref()));
             if let Some(last_modified) = content.last_modified() {
-                resp.append_header(("Last-Modified", last_modified));
+                resp.append_header(("Last-Modified", last_modified.as_ref()));
             }
             if let Some(body) = content.data_br() {
                 // This part will only work on release builds, try running with:
@@ -27,7 +27,7 @@ fn handle_embedded_file(path: &str) -> HttpResponse {
                 resp.append_header(("Content-Encoding", "br"));
                 resp.body(body)
             } else {
-                resp.body(content.data())
+                resp.body(content.data().unwrap())
             }
         }
         None => HttpResponse::NotFound().body("404 Not Found"),
@@ -57,7 +57,7 @@ fn print_sizes<F: EmbedableFile>(file: &F) {
     println!(
         "{}: {} bytes, {} compressed with BR, {} compressed with GZIP",
         file.name().as_ref(),
-        file.data().as_ref().len(),
+        file.data().unwrap().as_ref().len(),
         file.data_br()
             .map(|v| format!("{} bytes", v.as_ref().len()))
             .unwrap_or("not".to_string()),

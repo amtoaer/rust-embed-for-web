@@ -40,7 +40,8 @@ fn file_name_exists() {
 
 #[test]
 fn readme_example() {
-    let index = Embed::get("index.html").unwrap().data();
+    let file = Embed::get("index.html").unwrap();
+    let index = file.data().unwrap();
     let contents = std::str::from_utf8(index.as_ref()).unwrap();
     assert!(!contents.is_empty());
 }
